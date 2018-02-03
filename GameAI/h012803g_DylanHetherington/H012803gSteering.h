@@ -11,7 +11,7 @@ public:
 
 private:
 	Vector2D _resultantForce;
-	H012803gTank* _tank;
+//	H012803gTank* _tank;
 	Vector2D _target;
 
 	Vector2D Seek(Vector2D target);
