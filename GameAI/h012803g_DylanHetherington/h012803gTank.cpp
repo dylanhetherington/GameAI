@@ -11,6 +11,8 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mTankTurnDirection  = DIRECTION_UNKNOWN;
 	mTankMoveDirection	= DIRECTION_NONE;
 	mManTurnDirection   = DIRECTION_UNKNOWN;
+	_pSteeringBehaviour = new H012803gSteering(this);
+	_pSteeringBehaviour->ToggleSeek();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -34,8 +36,12 @@ void H012803gTank::Update(float deltaTime, SDL_Event e)
 	{
 	case SDL_MOUSEBUTTONDOWN: 
 		SDL_GetMouseState(&mouseCoords.x, &mouseCoords.y);
+		_pSteeringBehaviour->SetTarget(mouseCoords.x, mouseCoords.y);
 		break;
 	}
+	RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
+	MoveInHeadingDirection(deltaTime);
+	//RotateHeadingToFacePosition(_pSteeringBehaviour->CalculateCumluativeForce(), deltaTime);
 }
 
 void H012803gTank::Render()
@@ -49,8 +55,8 @@ void H012803gTank::Render()
 
 void H012803gTank::MoveInHeadingDirection(float deltaTime)
 {
-	//Get the force that propels in current heading.
-	Vector2D force = (mHeading*mCurrentSpeed)-mVelocity;
+	//Get the force that propels in current heading. = (mHeading*mCurrentSpeed)-mVelocity;
+	Vector2D force = (mHeading*mCurrentSpeed) + _pSteeringBehaviour->CalculateCumluativeForce();
 
 	//Acceleration = Force/Mass
 	Vector2D acceleration = force/GetMass();

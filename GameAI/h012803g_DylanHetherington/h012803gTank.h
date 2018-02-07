@@ -7,7 +7,7 @@
 #include "H012803gSteering.h"
 
 //---------------------------------------------------------------
-
+class H012803gSteering;
 class H012803gTank : public BaseTank
 {
 	//---------------------------------------------------------------
@@ -30,7 +30,7 @@ private:
 	TURN_DIRECTION  mTankTurnDirection;
 	MOVE_DIRECTION  mTankMoveDirection;
 	TURN_DIRECTION  mManTurnDirection;
-	//H012803gSteering steeringBehaviour;
+	H012803gSteering* _pSteeringBehaviour;
 
 };
 
