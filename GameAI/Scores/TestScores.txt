@@ -286,3 +286,48 @@ Tanks destroyed: 0	= 0
 Crates collected: 0	= 0
 Survival bonus': 0	= 0
 -------------------------------------------------------------
+-------------------------------------------------------------
+Tank name: ControlledTank   SCORE: 1
+Bullets hit: 0		= 0
+Rockets hit: 0		= 0
+Mines hit: 0		= 0
+Tanks destroyed: 0	= 0
+Crates collected: 0	= 0
+Survival bonus': 1	= 1
+-------------------------------------------------------------
+-------------------------------------------------------------
+Tank name: ControlledTank   SCORE: 1.5
+Bullets hit: 0		= 0
+Rockets hit: 0		= 0
+Mines hit: 0		= 0
+Tanks destroyed: 0	= 0
+Crates collected: 1	= 0.5
+Survival bonus': 1	= 1
+-------------------------------------------------------------
+-------------------------------------------------------------
+Tank name: ControlledTank   SCORE: 0
+Bullets hit: 0		= 0
+Rockets hit: 0		= 0
+Mines hit: 0		= 0
+Tanks destroyed: 0	= 0
+Crates collected: 0	= 0
+Survival bonus': 0	= 0
+-------------------------------------------------------------
+-------------------------------------------------------------
+Tank name: ControlledTank   SCORE: 0
+Bullets hit: 0		= 0
+Rockets hit: 0		= 0
+Mines hit: 0		= 0
+Tanks destroyed: 0	= 0
+Crates collected: 0	= 0
+Survival bonus': 0	= 0
+-------------------------------------------------------------
+-------------------------------------------------------------
+Tank name: ControlledTank   SCORE: 0
+Bullets hit: 0		= 0
+Rockets hit: 0		= 0
+Mines hit: 0		= 0
+Tanks destroyed: 0	= 0
+Crates collected: 0	= 0
+Survival bonus': 0	= 0
+-------------------------------------------------------------

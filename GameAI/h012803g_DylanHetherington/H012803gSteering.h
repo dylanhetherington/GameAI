@@ -21,12 +21,17 @@ public:
 	void ToggleWander() { _wander = true; }
 	void ToggleObstacleAvoidance() { _obstacleAvoidance = true; }
 	void SetTarget(float x, float y) { _target = Vector2D(x, y); }
-
 	Vector2D GetTarget() { return _target; }
+	void SetTargetAgent(BaseTank* tank) { _targetAgent = tank; }
+	BaseTank* GetTargetAgent() { return _targetAgent; }
+	bool GetSeek() { return _seek; }
+	bool GetFlee() { return _flee; }
+	bool GetPursuit() { return _pursuit; }
 private:
 	Vector2D _resultantForce;
 	H012803gTank* _pTank;
 	Vector2D _target;
+	BaseTank* _targetAgent;
 	std::vector<BaseTank> _tanksInView;
 
 	bool _seek;
@@ -41,10 +46,11 @@ private:
 	Vector2D Seek(Vector2D target);
 	Vector2D Flee(Vector2D target);
 	Vector2D Arrive(Vector2D target);
-	Vector2D Pursuit(const BaseTank* targetAgent);
+	Vector2D Pursuit(BaseTank* targetAgent);
 	Vector2D OffsetPursuit(const BaseTank* targetAgent);
 	Vector2D Evade(const BaseTank* targetAgent);
 	Vector2D Wander();
-	Vector2D ObstacleAvoidance(); 
+	Vector2D ObstacleAvoidance();
+
 };
 

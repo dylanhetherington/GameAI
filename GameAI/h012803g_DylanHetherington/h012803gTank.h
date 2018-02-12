@@ -19,7 +19,8 @@ public:
 
 	void Update(float deltaTime, SDL_Event e);
 	void Render();
-	void RotateHeadingByRadian(double radian, int sign);
+	void RotateHeadingByRadian(double radian, int sign, float deltaTime);
+	bool RotateHeadingToFacePosition(Vector2D, float);
 
 	//---------------------------------------------------------------
 protected:
@@ -32,6 +33,7 @@ private:
 	TURN_DIRECTION  mManTurnDirection;
 	H012803gSteering* _pSteeringBehaviour;
 
+	bool _behind;
 };
 
 //---------------------------------------------------------------

@@ -12,7 +12,11 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mTankMoveDirection	= DIRECTION_NONE;
 	mManTurnDirection   = DIRECTION_UNKNOWN;
 	_pSteeringBehaviour = new H012803gSteering(this);
-	_pSteeringBehaviour->ToggleSeek();
+	//_pSteeringBehaviour->ToggleSeek();
+	//_pSteeringBehaviour->ToggleFlee();
+	//_pSteeringBehaviour->TogglePursuit();
+	_pSteeringBehaviour->ToggleArrive();
+	_behind = false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -39,9 +43,18 @@ void H012803gTank::Update(float deltaTime, SDL_Event e)
 		_pSteeringBehaviour->SetTarget(mouseCoords.x, mouseCoords.y);
 		break;
 	}
-	RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
-	MoveInHeadingDirection(deltaTime);
-	//RotateHeadingToFacePosition(_pSteeringBehaviour->CalculateCumluativeForce(), deltaTime);
+
+	mTanksICanSee = TankManager::Instance()->GetVisibleTanks(this);
+
+	//if (_pSteeringBehaviour->GetPursuit() == true)
+	//{
+		for (int i = 0; i < mTanksICanSee.size(); i++)
+		{
+			_pSteeringBehaviour->SetTargetAgent(mTanksICanSee[i]);
+		}
+	//}
+		RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
+		MoveInHeadingDirection(deltaTime);
 }
 
 void H012803gTank::Render()
@@ -56,8 +69,15 @@ void H012803gTank::Render()
 void H012803gTank::MoveInHeadingDirection(float deltaTime)
 {
 	//Get the force that propels in current heading. = (mHeading*mCurrentSpeed)-mVelocity;
-	Vector2D force = (mHeading*mCurrentSpeed) + _pSteeringBehaviour->CalculateCumluativeForce();
-
+	Vector2D force;
+	if (_behind)
+	{
+		force = mHeading.GetReverse() * _pSteeringBehaviour->CalculateCumluativeForce().Length();
+	}
+	else
+	{
+		force = mHeading * _pSteeringBehaviour->CalculateCumluativeForce().Length();
+	}
 	//Acceleration = Force/Mass
 	Vector2D acceleration = force/GetMass();
 
@@ -75,9 +95,45 @@ void H012803gTank::MoveInHeadingDirection(float deltaTime)
 }
 
 //--------------------------------------------------------------------------------------------------
-
-void H012803gTank::RotateHeadingByRadian(double radian, int sign)
+bool H012803gTank::RotateHeadingToFacePosition(Vector2D target, float deltaTime)
 {
+	Vector2D toTarget;
+	if (_pSteeringBehaviour->GetFlee() == true)
+	{
+		toTarget = Vec2DNormalize(target - GetCentralPosition());
+	}
+	else
+	{
+		toTarget = Vec2DNormalize(GetCentralPosition() - target);
+	}
+
+
+	//Determine the angle between the heading vector and the target.
+	double angle = acos(mHeading.Dot(toTarget));
+
+	//Ensure angle does not become NaN and cause the tank to disappear.
+	if (angle != angle)
+		angle = 0.0f;
+
+	//Return true if the player is facing the target.
+	if (angle < 0.00001)
+		return true;
+	if (angle <= 1.571)
+	{
+		_behind = true;
+	}
+	else
+	{
+		_behind = false;
+	}
+	RotateHeadingByRadian(angle, mHeading.Sign(toTarget), deltaTime);
+
+	return true;
+}
+void H012803gTank::RotateHeadingByRadian(double radian, int sign, float deltaTime)
+{
+	//Incorporate delta time.
+	radian *= deltaTime;
 	//Clamp the amount to turn to the max turn rate.
 	if (radian > mMaxTurnRate) 
 		radian = mMaxTurnRate;
@@ -85,7 +141,6 @@ void H012803gTank::RotateHeadingByRadian(double radian, int sign)
 		radian = -mMaxTurnRate;
 	//IncrementTankRotationAngle(RadsToDegs(radian));
     mRotationAngle += RadsToDegs(radian)*sign;
-
 	//Usee a rotation matrix to rotate the player's heading
 	C2DMatrix RotationMatrix;
   
