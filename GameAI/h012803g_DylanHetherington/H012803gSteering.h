@@ -2,6 +2,8 @@
 #include "../Commons.h"
 #include "h012803gTank.h"
 #include "../BaseTank.h"
+#include "../ObstacleManager.h"
+#include "../C2DMatrix.h"
 #include <vector>
 class H012803gTank;
 class H012803gSteering
@@ -33,6 +35,7 @@ private:
 	Vector2D _target;
 	BaseTank* _targetAgent;
 	std::vector<BaseTank> _tanksInView;
+	std::vector<Vector2D> _feelers;
 
 	bool _seek;
 	bool _flee;
@@ -43,6 +46,8 @@ private:
 	bool _wander;
 	bool _obstacleAvoidance;
 
+	double _detectionBoxLength;
+
 	Vector2D Seek(Vector2D target);
 	Vector2D Flee(Vector2D target);
 	Vector2D Arrive(Vector2D target);
@@ -50,7 +55,8 @@ private:
 	Vector2D OffsetPursuit(const BaseTank* targetAgent);
 	Vector2D Evade(const BaseTank* targetAgent);
 	Vector2D Wander();
-	Vector2D ObstacleAvoidance();
-
+	Vector2D ObstacleAvoidance(std::vector<GameObject*> objects);
+	Vector2D ConvertToLocalSpace(Vector2D& point, Vector2D& heading, Vector2D& side, Vector2D& position);
+	Vector2D VectorToWorldSpace(const Vector2D &vec, const Vector2D &AgentHeading, const Vector2D &AgentSide);
 };
 

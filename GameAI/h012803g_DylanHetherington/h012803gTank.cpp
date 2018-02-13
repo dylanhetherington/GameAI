@@ -12,10 +12,11 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mTankMoveDirection	= DIRECTION_NONE;
 	mManTurnDirection   = DIRECTION_UNKNOWN;
 	_pSteeringBehaviour = new H012803gSteering(this);
-	//_pSteeringBehaviour->ToggleSeek();
+	_pSteeringBehaviour->ToggleSeek();
+	_pSteeringBehaviour->ToggleObstacleAvoidance();
 	//_pSteeringBehaviour->ToggleFlee();
 	//_pSteeringBehaviour->TogglePursuit();
-	_pSteeringBehaviour->ToggleArrive();
+	//_pSteeringBehaviour->ToggleArrive();
 	_behind = false;
 }
 
@@ -70,14 +71,14 @@ void H012803gTank::MoveInHeadingDirection(float deltaTime)
 {
 	//Get the force that propels in current heading. = (mHeading*mCurrentSpeed)-mVelocity;
 	Vector2D force;
-	if (_behind)
-	{
-		force = mHeading.GetReverse() * _pSteeringBehaviour->CalculateCumluativeForce().Length();
-	}
-	else
-	{
-		force = mHeading * _pSteeringBehaviour->CalculateCumluativeForce().Length();
-	}
+		if (_behind)
+		{
+			force = mHeading.GetReverse() * _pSteeringBehaviour->CalculateCumluativeForce().Length() - mVelocity;
+		}
+		else
+		{
+			force = mHeading * _pSteeringBehaviour->CalculateCumluativeForce().Length() - mVelocity;
+		}
 	//Acceleration = Force/Mass
 	Vector2D acceleration = force/GetMass();
 

@@ -1,4 +1,3 @@
-﻿  h012803gTank.cpp
-c:\users\h012803g\documents\gameai\gameai\h012803g_dylanhetherington\h012803gtank.cpp(42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\h012803g\documents\gameai\gameai\h012803g_dylanhetherington\h012803gtank.cpp(50): warning C4018: '<': signed/unsigned mismatch
-  GameAI.vcxproj -> C:\Users\h012803g\Documents\GameAI\Debug\GameAI.exe
+﻿  H012803gSteering.cpp
+e:\work\gameai\gameai\h012803g_dylanhetherington\h012803gsteering.cpp(130): warning C4018: '<': signed/unsigned mismatch
+  GameAI.vcxproj -> E:\Work\GameAI\Debug\GameAI.exe
