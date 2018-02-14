@@ -1,7 +1,5 @@
 #include "H012803gSteering.h"
 
-
-
 H012803gSteering::H012803gSteering(H012803gTank * directedTank)
 {
 	_pTank = directedTank;
@@ -121,6 +119,24 @@ Vector2D H012803gSteering::Wander()
 }
 Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 {
+	vector<GameObject*> visibleObstacles;
+	for (int i = 0; i < obstacles.size(); i++)
+	{
+		Vector2D heading = _pTank->GetHeading();
+		heading.Normalize();
+		Vector2D vectorToTarget = obstacles[i]->GetCentralPosition() - _pTank->GetCentralPosition();
+		double vectorToTargetLength = vectorToTarget.Length();
+
+		if (vectorToTargetLength < kFieldOfViewLength)
+		{
+			vectorToTarget.Normalize();
+			double dotProduct = heading.Dot(vectorToTarget);
+	
+		}
+	}
+}
+/*Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
+{
 	_detectionBoxLength = 1.0 + (_pTank->GetCurrentSpeed() / _pTank->GetMaxSpeed()) * 1.0;
 	Vector2D velocity;
 	double distanceToClosest = MaxDouble;
@@ -181,7 +197,7 @@ Vector2D H012803gSteering::ConvertToLocalSpace(Vector2D& point, Vector2D& headin
 	matTransform.TransformVector2Ds(TransPoint);
 
 	return TransPoint;
-}
+}*/
 Vector2D H012803gSteering::VectorToWorldSpace(const Vector2D &vec, const Vector2D &AgentHeading, const Vector2D &AgentSide)
 {
 	//make a copy of the point

@@ -12,10 +12,10 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mTankMoveDirection	= DIRECTION_NONE;
 	mManTurnDirection   = DIRECTION_UNKNOWN;
 	_pSteeringBehaviour = new H012803gSteering(this);
-	_pSteeringBehaviour->ToggleSeek();
-	_pSteeringBehaviour->ToggleObstacleAvoidance();
+	//_pSteeringBehaviour->ToggleSeek();
+	//_pSteeringBehaviour->ToggleObstacleAvoidance();
 	//_pSteeringBehaviour->ToggleFlee();
-	//_pSteeringBehaviour->TogglePursuit();
+	_pSteeringBehaviour->TogglePursuit();
 	//_pSteeringBehaviour->ToggleArrive();
 	_behind = false;
 }
@@ -47,13 +47,14 @@ void H012803gTank::Update(float deltaTime, SDL_Event e)
 
 	mTanksICanSee = TankManager::Instance()->GetVisibleTanks(this);
 
-	//if (_pSteeringBehaviour->GetPursuit() == true)
-	//{
 		for (int i = 0; i < mTanksICanSee.size(); i++)
 		{
 			_pSteeringBehaviour->SetTargetAgent(mTanksICanSee[i]);
 		}
-	//}
+		if (mTanksICanSee.size() == 0)
+		{
+			_pSteeringBehaviour->SetTargetAgent(nullptr);
+		}
 		RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
 		MoveInHeadingDirection(deltaTime);
 }
