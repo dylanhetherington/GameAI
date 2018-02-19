@@ -12,10 +12,10 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mTankMoveDirection	= DIRECTION_NONE;
 	mManTurnDirection   = DIRECTION_UNKNOWN;
 	_pSteeringBehaviour = new H012803gSteering(this);
-	//_pSteeringBehaviour->ToggleSeek();
-	//_pSteeringBehaviour->ToggleObstacleAvoidance();
+	_pSteeringBehaviour->ToggleSeek();
+	_pSteeringBehaviour->ToggleObstacleAvoidance();
 	//_pSteeringBehaviour->ToggleFlee();
-	_pSteeringBehaviour->TogglePursuit();
+	//_pSteeringBehaviour->TogglePursuit();
 	//_pSteeringBehaviour->ToggleArrive();
 	_behind = false;
 }

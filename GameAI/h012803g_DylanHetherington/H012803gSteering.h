@@ -4,6 +4,7 @@
 #include "../BaseTank.h"
 #include "../ObstacleManager.h"
 #include "../C2DMatrix.h"
+#include "../Collisions.h"
 #include <vector>
 class H012803gTank;
 class H012803gSteering

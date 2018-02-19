@@ -119,7 +119,7 @@ Vector2D H012803gSteering::Wander()
 }
 Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 {
-	vector<GameObject*> visibleObstacles;
+	std::vector<GameObject*> visibleObstacles;
 	for (int i = 0; i < obstacles.size(); i++)
 	{
 		Vector2D heading = _pTank->GetHeading();
@@ -131,7 +131,35 @@ Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 		{
 			vectorToTarget.Normalize();
 			double dotProduct = heading.Dot(vectorToTarget);
-	
+			if (dotProduct > kFieldOfView)
+			{
+				Vector2D point1 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.33f));
+				Vector2D point2 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.5f));
+				Vector2D point3 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.66f));
+				std::vector<Vector2D> rect = obstacles[i]->GetAdjustedBoundingBox();
+
+				if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point1)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point1)))
+				{
+					Vector2D OverShoot = point1 - obstacles[i]->GetCentralPosition();
+					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					normalized.Normalize();
+					return Vector2D(normalized * OverShoot.Length());
+				}
+				else if	((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point2)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point2)))
+				{
+					Vector2D OverShoot = point2 - obstacles[i]->GetCentralPosition();
+					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					normalized.Normalize();
+					return Vector2D(normalized * OverShoot.Length());
+				}
+				else if	((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point3)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point3)))
+				{
+					Vector2D OverShoot = point3 - obstacles[i]->GetCentralPosition();
+					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					normalized.Normalize();
+					return Vector2D(normalized * OverShoot.Length());
+				}
+			}
 		}
 	}
 }
