@@ -1,4 +1,8 @@
-﻿  H012803gSteering.cpp
-c:\users\h012803g\documents\gameai\gameai\h012803g_dylanhetherington\h012803gsteering.cpp(123): warning C4018: '<': signed/unsigned mismatch
-c:\users\h012803g\documents\gameai\gameai\h012803g_dylanhetherington\h012803gsteering.cpp(165): warning C4715: 'H012803gSteering::ObstacleAvoidance': not all control paths return a value
-  GameAI.vcxproj -> C:\Users\h012803g\Documents\GameAI\Debug\GameAI.exe
+﻿  h012803gTank.cpp
+e:\work\gameai\gameai\h012803g_dylanhetherington\h012803gtank.cpp(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+e:\work\gameai\gameai\h012803g_dylanhetherington\h012803gtank.cpp(50): warning C4018: '<': signed/unsigned mismatch
+e:\work\gameai\gameai\h012803g_dylanhetherington\h012803gtank.cpp(58): warning C4018: '<': signed/unsigned mismatch
+  H012803gSteering.cpp
+e:\work\gameai\gameai\h012803g_dylanhetherington\h012803gsteering.cpp(127): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  GameAI.vcxproj -> E:\Work\GameAI\Debug\GameAI.exe

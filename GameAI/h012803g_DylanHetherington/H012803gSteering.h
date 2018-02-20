@@ -2,6 +2,7 @@
 #include "../Commons.h"
 #include "h012803gTank.h"
 #include "../BaseTank.h"
+#include "../ProjectileManager.h"
 #include "../ObstacleManager.h"
 #include "../C2DMatrix.h"
 #include "../Collisions.h"
@@ -25,6 +26,8 @@ public:
 	void ToggleObstacleAvoidance() { _obstacleAvoidance = true; }
 	void SetTarget(float x, float y) { _target = Vector2D(x, y); }
 	Vector2D GetTarget() { return _target; }
+	void SetDangerousMine(GameObject* mine) { _dangerousMine = mine; }
+	GameObject* GetDangerousMine() { return _dangerousMine; }
 	void SetTargetAgent(BaseTank* tank) { _targetAgent = tank; }
 	BaseTank* GetTargetAgent() { return _targetAgent; }
 	bool GetSeek() { return _seek; }
@@ -35,6 +38,7 @@ private:
 	H012803gTank* _pTank;
 	Vector2D _target;
 	BaseTank* _targetAgent;
+	GameObject* _dangerousMine;
 	std::vector<BaseTank> _tanksInView;
 	std::vector<Vector2D> _feelers;
 
@@ -57,7 +61,6 @@ private:
 	Vector2D Evade(const BaseTank* targetAgent);
 	Vector2D Wander();
 	Vector2D ObstacleAvoidance(std::vector<GameObject*> objects);
-	Vector2D ConvertToLocalSpace(Vector2D& point, Vector2D& heading, Vector2D& side, Vector2D& position);
-	Vector2D VectorToWorldSpace(const Vector2D &vec, const Vector2D &AgentHeading, const Vector2D &AgentSide);
+
 };
 

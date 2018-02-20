@@ -268,7 +268,7 @@ vector<BaseTank*>	TankManager::GetVisibleTanks(BaseTank* lookingTank)
 								//cout << "Can see you!!" << endl;
 
 								//Get completely out of the obstacle check.
-								break;
+								//break;
 							}
 						}
 					}

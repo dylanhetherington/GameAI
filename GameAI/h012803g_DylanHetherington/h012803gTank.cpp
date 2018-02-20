@@ -13,9 +13,9 @@ H012803gTank::H012803gTank(SDL_Renderer* renderer, TankSetupDetails details)
 	mManTurnDirection   = DIRECTION_UNKNOWN;
 	_pSteeringBehaviour = new H012803gSteering(this);
 	_pSteeringBehaviour->ToggleSeek();
-	_pSteeringBehaviour->ToggleObstacleAvoidance();
+	//_pSteeringBehaviour->ToggleObstacleAvoidance();
 	//_pSteeringBehaviour->ToggleFlee();
-	//_pSteeringBehaviour->TogglePursuit();
+	_pSteeringBehaviour->TogglePursuit();
 	//_pSteeringBehaviour->ToggleArrive();
 	_behind = false;
 }
@@ -46,17 +46,25 @@ void H012803gTank::Update(float deltaTime, SDL_Event e)
 	}
 
 	mTanksICanSee = TankManager::Instance()->GetVisibleTanks(this);
-
-		for (int i = 0; i < mTanksICanSee.size(); i++)
-		{
-			_pSteeringBehaviour->SetTargetAgent(mTanksICanSee[i]);
-		}
-		if (mTanksICanSee.size() == 0)
-		{
-			_pSteeringBehaviour->SetTargetAgent(nullptr);
-		}
-		RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
-		MoveInHeadingDirection(deltaTime);
+	_enemyMines = ProjectileManager::Instance()->GetVisibleMines(this);
+	for (int i = 0; i < _enemyMines.size(); i++)
+	{
+		_pSteeringBehaviour->SetDangerousMine(_enemyMines[i]);
+	}
+	if (_enemyMines.size() == 0)
+	{
+		_pSteeringBehaviour->SetDangerousMine(nullptr);
+	}
+	for (int i = 0; i < mTanksICanSee.size(); i++)
+	{
+		_pSteeringBehaviour->SetTargetAgent(mTanksICanSee[i]);
+	}
+	if (mTanksICanSee.size() == 0)
+	{
+		_pSteeringBehaviour->SetTargetAgent(nullptr);
+	}
+	RotateHeadingToFacePosition(_pSteeringBehaviour->GetTarget(), deltaTime);
+	MoveInHeadingDirection(deltaTime);
 }
 
 void H012803gTank::Render()

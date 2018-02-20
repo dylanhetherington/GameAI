@@ -24,6 +24,10 @@ H012803gSteering::~H012803gSteering()
 Vector2D H012803gSteering::CalculateCumluativeForce()
 {
 	Vector2D force;
+	if (_obstacleAvoidance == true)
+	{
+		force += ObstacleAvoidance(ObstacleManager::Instance()->GetObstacles());
+	}
 	if (_seek == true)
 	{
 		force += Seek(_target);
@@ -39,10 +43,6 @@ Vector2D H012803gSteering::CalculateCumluativeForce()
 	if (_pursuit == true && _targetAgent != nullptr)
 	{
 		force += Pursuit(_targetAgent);
-	}
-	if (_obstacleAvoidance == true)
-	{
-		force += ObstacleAvoidance(ObstacleManager::Instance()->GetObstacles());
 	}
 	return force;
 }
@@ -119,49 +119,65 @@ Vector2D H012803gSteering::Wander()
 }
 Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 {
-	std::vector<GameObject*> visibleObstacles;
+	GameObject* close = nullptr;
+	Vector2D heading = _pTank->GetHeading();
+	heading.Normalize();
+	double closeObjectDistance = MaxDouble;
+	Vector2D closeTarget;
 	for (int i = 0; i < obstacles.size(); i++)
 	{
-		Vector2D heading = _pTank->GetHeading();
-		heading.Normalize();
 		Vector2D vectorToTarget = obstacles[i]->GetCentralPosition() - _pTank->GetCentralPosition();
 		double vectorToTargetLength = vectorToTarget.Length();
 
 		if (vectorToTargetLength < kFieldOfViewLength)
 		{
 			vectorToTarget.Normalize();
-			double dotProduct = heading.Dot(vectorToTarget);
+
+			if (vectorToTargetLength < closeObjectDistance)
+			{
+				closeObjectDistance = vectorToTargetLength;
+				closeTarget = vectorToTarget;
+				close = obstacles[i];
+			}
+		}
+		if (close != nullptr)
+		{
+			double dotProduct = heading.Dot(closeTarget);
 			if (dotProduct > kFieldOfView)
 			{
-				Vector2D point1 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.33f));
-				Vector2D point2 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.5f));
-				Vector2D point3 = _pTank->GetCentralPosition() + (vectorToTarget*(vectorToTargetLength*0.66f));
-				std::vector<Vector2D> rect = obstacles[i]->GetAdjustedBoundingBox();
+				//Vector2D point1 = _pTank->GetCentralPosition() + 10 * heading;
+				//Vector2D point2 = _pTank->GetCentralPosition() + 10/2 * heading;
+				//Vector2D point3 = _pTank->GetCentralPosition() + 10/2 * heading;
+				Vector2D point1 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.33f));
+				Vector2D point2 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.5f));
+				Vector2D point3 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.66f));
+				std::vector<Vector2D> rect = close->GetAdjustedBoundingBox();
 
 				if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point1)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point1)))
 				{
-					Vector2D OverShoot = point1 - obstacles[i]->GetCentralPosition();
-					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					Vector2D OverShoot = point1 - close->GetCentralPosition();
+					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
 				}
-				else if	((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point2)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point2)))
+				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point2)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point2)))
 				{
-					Vector2D OverShoot = point2 - obstacles[i]->GetCentralPosition();
-					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					Vector2D OverShoot = point2 - close->GetCentralPosition();
+					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
 				}
-				else if	((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point3)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point3)))
+				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point3)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point3)))
 				{
-					Vector2D OverShoot = point3 - obstacles[i]->GetCentralPosition();
-					Vector2D normalized = obstacles[i]->GetCentralPosition();
+					Vector2D OverShoot = point3 - close->GetCentralPosition();
+					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
 				}
 			}
 		}
 	}
+	return Vector2D(0, 0);
 }
 /*Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 {
@@ -204,41 +220,4 @@ Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 		SteeringForce.x = (closestObject->GetCollisionRadius() - closestPosition.x) * 0.2;
 	}
 	return VectorToWorldSpace(SteeringForce, _pTank->GetHeading(), _pTank->GetSide());
-}
-//converts to local space so that two points at an angle can have acurate collision checks performed on each other
-Vector2D H012803gSteering::ConvertToLocalSpace(Vector2D& point, Vector2D& heading, Vector2D& side, Vector2D& position)
-{
-	Vector2D TransPoint = point;
-
-	//create a transformation matrix
-	C2DMatrix matTransform;
-
-	double Tx = -position.Dot(heading);
-	double Ty = -position.Dot(side);
-
-	//create the transformation matrix
-	matTransform._11(heading.x); matTransform._12(side.x);
-	matTransform._21(heading.y); matTransform._22(side.y);
-	matTransform._31(Tx);           matTransform._32(Ty);
-
-	//now transform the vertices
-	matTransform.TransformVector2Ds(TransPoint);
-
-	return TransPoint;
 }*/
-Vector2D H012803gSteering::VectorToWorldSpace(const Vector2D &vec, const Vector2D &AgentHeading, const Vector2D &AgentSide)
-{
-	//make a copy of the point
-	Vector2D TransVec = vec;
-
-	//create a transformation matrix
-	C2DMatrix matTransform;
-
-	//rotate
-	matTransform.Rotate(AgentHeading, AgentSide);
-
-	//now transform the vertices
-	matTransform.TransformVector2Ds(TransVec);
-
-	return TransVec;
-}

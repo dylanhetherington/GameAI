@@ -16,7 +16,6 @@ public:
 	~H012803gTank();
 
 	void ChangeState(BASE_TANK_STATE newState);
-
 	void Update(float deltaTime, SDL_Event e);
 	void Render();
 	void RotateHeadingByRadian(double radian, int sign, float deltaTime);
@@ -31,9 +30,11 @@ private:
 	TURN_DIRECTION  mTankTurnDirection;
 	MOVE_DIRECTION  mTankMoveDirection;
 	TURN_DIRECTION  mManTurnDirection;
-	H012803gSteering* _pSteeringBehaviour;
-
+	H012803gSteering* _pSteeringBehaviour;	
+	
 	bool _behind;
+	std::vector<GameObject*> _enemyMines;
+
 };
 
 //---------------------------------------------------------------
