@@ -132,7 +132,6 @@ Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 		if (vectorToTargetLength < kFieldOfViewLength)
 		{
 			vectorToTarget.Normalize();
-
 			if (vectorToTargetLength < closeObjectDistance)
 			{
 				closeObjectDistance = vectorToTargetLength;
@@ -145,39 +144,61 @@ Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 			double dotProduct = heading.Dot(closeTarget);
 			if (dotProduct > kFieldOfView)
 			{
-				//Vector2D point1 = _pTank->GetCentralPosition() + 10 * heading;
-				//Vector2D point2 = _pTank->GetCentralPosition() + 10/2 * heading;
-				//Vector2D point3 = _pTank->GetCentralPosition() + 10/2 * heading;
-				Vector2D point1 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.33f));
-				Vector2D point2 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.5f));
-				Vector2D point3 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.66f));
+				Vector2D centrePosition = _pTank->GetCentralPosition();
+				Vector2D velocity = _pTank->GetVelocity();
+				velocity.Normalize();
+				Vector2D aheadVector = Vector2D(centrePosition.x + velocity.x * 2, centrePosition.y + velocity.y * 2);
+				//Vector2D point1 = _pTank->GetCentralPosition() + 100;//(closeTarget*(vectorToTargetLength*0.33f));
+				//Vector2D point2 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.5f));
+				//Vector2D point3 = _pTank->GetCentralPosition() + (closeTarget*(vectorToTargetLength*0.66f));
 				std::vector<Vector2D> rect = close->GetAdjustedBoundingBox();
-
-				if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point1)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point1)))
+				if (LineCircleColision(close, aheadVector) == true)
 				{
-					Vector2D OverShoot = point1 - close->GetCentralPosition();
+					Vector2D force = aheadVector - close->GetCentralPosition();
+					force.Normalize();
+					force *= _pTank->GetMaxForce();
+					return force;
+				}
+				/*
+				if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], aheadVector)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], aheadVector)))
+				{
+					Vector2D OverShoot = aheadVector - close->GetCentralPosition();
 					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
 				}
-				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point2)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point2)))
+				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], aheadVector)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], aheadVector)))
 				{
-					Vector2D OverShoot = point2 - close->GetCentralPosition();
+					Vector2D OverShoot = aheadVector - close->GetCentralPosition();
 					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
 				}
-				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], point3)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], point3)))
+				else if ((Collisions::Instance()->TriangleCollision(rect[1], rect[2], rect[3], aheadVector)) || (Collisions::Instance()->TriangleCollision(rect[0], rect[1], rect[3], aheadVector)))
 				{
-					Vector2D OverShoot = point3 - close->GetCentralPosition();
+					Vector2D OverShoot = aheadVector - close->GetCentralPosition();
 					Vector2D normalized = close->GetCentralPosition();
 					normalized.Normalize();
 					return Vector2D(normalized * OverShoot.Length());
-				}
+				}*/
 			}
 		}
 	}
 	return Vector2D(0, 0);
+}
+bool H012803gSteering::LineCircleColision(GameObject* obstacle, Vector2D ahead)
+{
+	Vector2D vec = Vector2D((ahead.x - obstacle->GetCentralPosition().x), (ahead.y - obstacle->GetCentralPosition().y));
+	double distanceSq = (vec.x*vec.x) + (vec.y*vec.y);
+	//double distance = (ahead.x + obstacle->GetCentralPosition().x) + (ahead.y + obstacle->GetCentralPosition().y);
+	if (distanceSq <= obstacle->GetCollisionRadiusSq())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 /*Vector2D H012803gSteering::ObstacleAvoidance(std::vector<GameObject*> obstacles)
 {

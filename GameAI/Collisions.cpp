@@ -76,7 +76,6 @@ bool Collisions::PointInBox(Vector2D point, Rect2D rect2)
 	{
 		return true;
 	}
-
 	return false;
 }
 

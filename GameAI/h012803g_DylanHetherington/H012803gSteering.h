@@ -61,6 +61,7 @@ private:
 	Vector2D Evade(const BaseTank* targetAgent);
 	Vector2D Wander();
 	Vector2D ObstacleAvoidance(std::vector<GameObject*> objects);
+	bool LineCircleColision(GameObject* obstacle, Vector2D ahead);
 
 };
 
