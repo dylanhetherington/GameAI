@@ -77,6 +77,7 @@
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GameScreenLevel1.h" />
     <ClInclude Include="GameScreenManager.h" />
+    <ClInclude Include="h012803g_DylanHetherington\H012803gPathFinder.h" />
     <ClInclude Include="h012803g_DylanHetherington\H012803gSteering.h" />
     <ClInclude Include="h012803g_DylanHetherington\h012803gTank.h" />
     <ClInclude Include="LevelMap.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GameScreenLevel1.cpp" />
     <ClCompile Include="GameScreenManager.cpp" />
+    <ClCompile Include="h012803g_DylanHetherington\H012803gPathFinder.cpp" />
     <ClCompile Include="h012803g_DylanHetherington\H012803gSteering.cpp" />
     <ClCompile Include="h012803g_DylanHetherington\h012803gTank.cpp" />
     <ClCompile Include="LevelMap.cpp" />

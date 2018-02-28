@@ -102,6 +102,9 @@
     <ClInclude Include="h012803g_DylanHetherington\H012803gSteering.h">
       <Filter>h012803g_DylanHetherington</Filter>
     </ClInclude>
+    <ClInclude Include="h012803g_DylanHetherington\H012803gPathFinder.h">
+      <Filter>h012803g_DylanHetherington</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WaypointManager.cpp">
@@ -177,6 +180,9 @@
       <Filter>h012803g_DylanHetherington</Filter>
     </ClCompile>
     <ClCompile Include="h012803g_DylanHetherington\H012803gSteering.cpp">
+      <Filter>h012803g_DylanHetherington</Filter>
+    </ClCompile>
+    <ClCompile Include="h012803g_DylanHetherington\H012803gPathFinder.cpp">
       <Filter>h012803g_DylanHetherington</Filter>
     </ClCompile>
   </ItemGroup>
